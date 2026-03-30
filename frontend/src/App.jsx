@@ -8,6 +8,14 @@ import Home from './pages/Home'
 import Tours from './pages/Tours'
 import TourDetail from './pages/TourDetail'
 import Contact from './pages/Contact'
+import Login from './pages/Login'
+import RequireAdmin from './components/RequireAdmin'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminTours from './pages/admin/AdminTours'
+import AdminBookings from './pages/admin/AdminBookings'
+import AdminTestimonials from './pages/admin/AdminTestimonials'
+import AdminInquiries from './pages/admin/AdminInquiries'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,18 +29,37 @@ function ScrollToTop() {
   return null
 }
 
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Navbar />
+      {children}
+      <Footer />
+    </>
+  )
+}
+
 function AppRoutes() {
   return (
     <>
       <ScrollToTop />
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/tours" element={<Tours />} />
-        <Route path="/tours/:id" element={<TourDetail />} />
-        <Route path="/contact" element={<Contact />} />
+        {/* Public routes */}
+        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+        <Route path="/tours" element={<PublicLayout><Tours /></PublicLayout>} />
+        <Route path="/tours/:id" element={<PublicLayout><TourDetail /></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+
+        {/* Admin routes */}
+        <Route path="/admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="tours" element={<AdminTours />} />
+          <Route path="bookings" element={<AdminBookings />} />
+          <Route path="testimonials" element={<AdminTestimonials />} />
+          <Route path="inquiries" element={<AdminInquiries />} />
+        </Route>
       </Routes>
-      <Footer />
     </>
   )
 }

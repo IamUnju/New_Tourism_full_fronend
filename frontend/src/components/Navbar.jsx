@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, LogIn, LayoutDashboard, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -16,6 +17,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -105,7 +108,32 @@ export default function Navbar() {
           </div>
 
           {/* CTA + Mobile Toggle */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                {user.role === 'admin' && (
+                  <Link to="/admin"
+                    className={`hidden lg:flex items-center gap-1.5 text-sm font-medium font-sans px-4 py-2 rounded-full transition-all duration-300 border ${
+                      isTransparent ? 'border-white/40 text-white hover:bg-white/10' : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}>
+                    <LayoutDashboard size={14} /> Admin
+                  </Link>
+                )}
+                <button onClick={() => { logout(); navigate('/') }}
+                  className={`hidden lg:flex items-center gap-1.5 text-sm font-medium font-sans px-4 py-2 rounded-full transition-all duration-300 ${
+                    isTransparent ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}>
+                  <LogOut size={14} /> Logout
+                </button>
+              </>
+            ) : (
+              <Link to="/login"
+                className={`hidden lg:flex items-center gap-1.5 text-sm font-medium font-sans px-4 py-2 rounded-full transition-all duration-300 border ${
+                  isTransparent ? 'border-white/40 text-white hover:bg-white/10' : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                }`}>
+                <LogIn size={14} /> Sign In
+              </Link>
+            )}
             <Link
               to="/tours"
               className={`hidden lg:block text-sm font-medium font-sans px-6 py-2.5 rounded-full transition-all duration-300 ${
