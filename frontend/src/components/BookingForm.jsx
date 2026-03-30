@@ -1,26 +1,58 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Users, Mail, Phone, MessageSquare, CheckCircle, Loader2 } from 'lucide-react'
+import { Calendar, Users, Mail, Phone, MessageSquare, CheckCircle, Loader2, AlertCircle } from 'lucide-react'
+import { bookingsApi } from '../api/bookings'
+import { inquiriesApi } from '../api/inquiries'
+import { useAuth } from '../context/AuthContext'
 
-export default function BookingForm({ tourTitle = '', tourPrice = 0, compact = false }) {
+export default function BookingForm({ tourId = null, tourTitle = '', tourPrice = 0, compact = false }) {
+  const { user } = useAuth()
   const [form, setForm] = useState({
-    name: '',
-    email: '',
+    name: user?.name ?? '',
+    email: user?.email ?? '',
     phone: '',
     date: '',
     guests: '2',
     message: '',
   })
-  const [status, setStatus] = useState('idle') // idle | loading | success
+  const [status, setStatus] = useState('idle') // idle | loading | success | error
+  const [errorMsg, setErrorMsg] = useState('')
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('loading')
-    setTimeout(() => setStatus('success'), 1800)
+    setErrorMsg('')
+    try {
+      if (user && tourId) {
+        await bookingsApi.create({
+          tour_id: tourId,
+          travel_date: form.date,
+          guests: parseInt(form.guests),
+          special_requests: form.message || undefined,
+          contact_name: form.name,
+          contact_email: form.email,
+          contact_phone: form.phone || undefined,
+        })
+      } else {
+        await inquiriesApi.create({
+          name: form.name,
+          email: form.email,
+          phone: form.phone || undefined,
+          message: `Booking inquiry for ${tourTitle || 'a tour'}. Travel date: ${form.date}. Guests: ${form.guests}. ${form.message}`.trim(),
+          tour_interest: tourTitle || undefined,
+        })
+      }
+      setStatus('success')
+    } catch (err) {
+      setStatus('error')
+      setErrorMsg(
+        err?.response?.data?.detail ?? 'Something went wrong. Please try again or contact us directly.'
+      )
+    }
   }
 
   const total = tourPrice > 0 ? tourPrice * parseInt(form.guests || '1') : null
@@ -178,6 +210,13 @@ export default function BookingForm({ tourTitle = '', tourPrice = 0, compact = f
           'Send Booking Request'
         )}
       </button>
+
+      {status === 'error' && (
+        <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+          <AlertCircle size={15} className="text-red-400 flex-shrink-0 mt-0.5" />
+          <p className="font-sans text-xs text-red-600">{errorMsg}</p>
+        </div>
+      )}
 
       <p className="font-sans text-[11px] text-gray-400 text-center leading-relaxed">
         No payment required now · Free cancellation within 48 hours · Response within 24 hours

@@ -2,12 +2,20 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useInView } from 'react-intersection-observer'
+import { useQuery } from '@tanstack/react-query'
 import TourCard from './TourCard'
-import { tours } from '../data/tours'
+import { toursApi } from '../api/tours'
+import { tours as staticTours } from '../data/tours'
 
 export default function FeaturedTours() {
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
-  const featured = tours.filter((t) => t.featured)
+
+  const { data: featured } = useQuery({
+    queryKey: ['tours-featured'],
+    queryFn: () => toursApi.featured(4),
+  })
+
+  const displayTours = featured?.length ? featured : staticTours.filter((t) => t.featured)
 
   return (
     <section id="tours" className="py-24 lg:py-32 bg-beige">
@@ -47,7 +55,7 @@ export default function FeaturedTours() {
 
         {/* Tour Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {featured.map((tour, index) => (
+          {displayTours.map((tour, index) => (
             <TourCard key={tour.id} tour={tour} index={index} />
           ))}
         </div>
@@ -61,7 +69,7 @@ export default function FeaturedTours() {
           className="text-center mt-16"
         >
           <Link to="/tours" className="btn-outline-dark inline-flex items-center gap-2">
-            Explore All 24 Tours
+            Explore All Tours
             <ArrowRight size={16} />
           </Link>
         </motion.div>

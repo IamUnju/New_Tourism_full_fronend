@@ -1,13 +1,31 @@
-import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Autoplay } from 'swiper/modules'
 import { Star, Quote } from 'lucide-react'
-import { testimonials } from '../data/tours'
+import { useQuery } from '@tanstack/react-query'
+import { testimonialsApi } from '../api/testimonials'
+import { testimonials as staticTestimonials } from '../data/tours'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
 export default function Testimonials() {
+  const { data } = useQuery({
+    queryKey: ['testimonials'],
+    queryFn: () => testimonialsApi.list({ per_page: 12 }),
+  })
+
+  const items = data?.items?.length
+    ? data.items.map((t) => ({
+        id: t.id,
+        rating: t.rating,
+        text: t.message,
+        tour: t.tour_id ? `Tour #${t.tour_id}` : 'Safari Experience',
+        avatar: t.avatar_url ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=1a3a2a&color=c9a96e`,
+        name: t.name,
+        location: t.location ?? '',
+      }))
+    : staticTestimonials
+
   return (
     <section className="py-24 lg:py-32 bg-green-950 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -44,7 +62,7 @@ export default function Testimonials() {
             modules={[Pagination, Autoplay]}
             slidesPerView={1}
             spaceBetween={24}
-            loop={true}
+            loop={items.length > 2}
             autoplay={{ delay: 5500, disableOnInteraction: false, pauseOnMouseEnter: true }}
             pagination={{ clickable: true }}
             breakpoints={{
@@ -53,32 +71,27 @@ export default function Testimonials() {
             }}
             className="!pb-12"
           >
-            {testimonials.map((t) => (
+            {items.map((t) => (
               <SwiperSlide key={t.id}>
                 <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 transition-colors duration-400">
-                  {/* Quote icon */}
                   <Quote size={32} className="text-gold mb-6 flex-shrink-0" fill="#c9a96e" fillOpacity={0.3} />
 
-                  {/* Stars */}
                   <div className="flex gap-1 mb-5">
-                    {[...Array(t.rating)].map((_, i) => (
+                    {[...Array(Math.min(t.rating, 5))].map((_, i) => (
                       <Star key={i} size={14} className="text-gold fill-gold" />
                     ))}
                   </div>
 
-                  {/* Review text */}
                   <p className="font-sans text-white/80 leading-relaxed text-sm flex-1 mb-8 italic">
                     "{t.text}"
                   </p>
 
-                  {/* Tour tag */}
                   <div className="mb-5">
                     <span className="bg-gold/20 text-gold font-sans text-xs px-3 py-1.5 rounded-full">
                       {t.tour}
                     </span>
                   </div>
 
-                  {/* Author */}
                   <div className="flex items-center gap-3 pt-5 border-t border-white/10">
                     <img
                       src={t.avatar}

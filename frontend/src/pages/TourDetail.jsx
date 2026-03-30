@@ -5,9 +5,10 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Thumbs } from 'swiper/modules'
 import {
   ArrowLeft, Star, Clock, Users, MapPin, CheckCircle, XCircle,
-  ChevronDown, Share2, Heart, Calendar
+  ChevronDown, Share2, Heart, Calendar, Loader2
 } from 'lucide-react'
-import { tours } from '../data/tours'
+import { useQuery } from '@tanstack/react-query'
+import { toursApi } from '../api/tours'
 import BookingForm from '../components/BookingForm'
 import TourCard from '../components/TourCard'
 import 'swiper/css'
@@ -17,7 +18,19 @@ import 'swiper/css/thumbs'
 export default function TourDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const tour = tours.find((t) => t.id === id)
+
+  const { data: tour, isLoading, isError } = useQuery({
+    queryKey: ['tour', id],
+    queryFn: () => toursApi.getBySlug(id),
+    enabled: !!id,
+  })
+
+  const { data: relatedData } = useQuery({
+    queryKey: ['tours-related', tour?.category],
+    queryFn: () => toursApi.list({ category: tour?.category, per_page: 4 }),
+    enabled: !!tour?.category,
+    select: (d) => d.items.filter((t) => t.id !== tour?.id).slice(0, 3),
+  })
 
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
   const [activeDay, setActiveDay] = useState(null)
@@ -25,9 +38,7 @@ export default function TourDetail() {
   const [wishlist, setWishlist] = useState(false)
   const bookingRef = useRef(null)
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [id])
+  useEffect(() => { window.scrollTo(0, 0) }, [id])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,7 +51,15 @@ export default function TourDetail() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (!tour) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-beige">
+        <Loader2 size={48} className="animate-spin text-gold" />
+      </div>
+    )
+  }
+
+  if (isError || !tour) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-beige">
         <div className="text-center">
@@ -52,8 +71,9 @@ export default function TourDetail() {
     )
   }
 
-  const related = tours.filter((t) => t.id !== tour.id && t.category === tour.category).slice(0, 3)
-  const fallbackRelated = tours.filter((t) => t.id !== tour.id).slice(0, 3)
+  const coverImage = tour.images?.find((i) => i.is_cover)?.url ?? tour.images?.[0]?.url ?? '/images/hero-bg.jpg'
+  const galleryImages = tour.images?.length ? tour.images.map((i) => i.url) : [coverImage]
+  const related = relatedData ?? []
 
   return (
     <main className="min-h-screen bg-beige">
@@ -69,12 +89,12 @@ export default function TourDetail() {
           >
             <div className="max-w-7xl mx-auto px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 min-w-0">
-                <img src={tour.image} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
+                <img src={coverImage} alt="" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
                 <div className="min-w-0">
                   <p className="font-serif text-sm font-semibold text-green-950 truncate">{tour.title}</p>
                   <div className="flex items-center gap-1.5">
                     <Star size={11} className="text-gold fill-gold" />
-                    <span className="font-sans text-xs text-gray-500">{tour.rating} · {tour.reviewCount} reviews</span>
+                    <span className="font-sans text-xs text-gray-500">{tour.rating} · {tour.review_count} reviews</span>
                   </div>
                 </div>
               </div>
@@ -143,7 +163,7 @@ export default function TourDetail() {
                 <div className="flex items-center gap-1">
                   <Star size={14} className="text-gold fill-gold" />
                   <span className="font-sans text-sm font-semibold text-green-950">{tour.rating}</span>
-                  <span className="font-sans text-sm text-gray-400">({tour.reviewCount} reviews)</span>
+                  <span className="font-sans text-sm text-gray-400">({tour.review_count} reviews)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Clock size={14} className="text-gray-400" />
@@ -151,7 +171,7 @@ export default function TourDetail() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Users size={14} className="text-gray-400" />
-                  <span className="font-sans text-sm text-gray-500">{tour.groupSize}</span>
+                  <span className="font-sans text-sm text-gray-500">{tour.group_size}</span>
                 </div>
               </div>
             </div>
@@ -164,7 +184,7 @@ export default function TourDetail() {
                 thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
                 className="rounded-3xl overflow-hidden aspect-[16/9] shadow-xl"
               >
-                {tour.gallery.map((img, i) => (
+                {galleryImages.map((img, i) => (
                   <SwiperSlide key={i}>
                     <img src={img} alt={`${tour.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                   </SwiperSlide>
@@ -178,7 +198,7 @@ export default function TourDetail() {
                 watchSlidesProgress
                 className="!h-20"
               >
-                {tour.gallery.map((img, i) => (
+                {galleryImages.map((img, i) => (
                   <SwiperSlide key={i}>
                     <div className="rounded-xl overflow-hidden h-full cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
                       <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
@@ -198,7 +218,7 @@ export default function TourDetail() {
             >
               <h2 className="font-serif text-2xl font-semibold text-green-950 mb-6">Tour Highlights</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {tour.highlights.map((h) => (
+                {(tour.highlights ?? []).map((h) => (
                   <div key={h} className="flex items-start gap-3">
                     <CheckCircle size={16} className="text-gold flex-shrink-0 mt-0.5" />
                     <span className="font-sans text-sm text-gray-700">{h}</span>
@@ -229,7 +249,7 @@ export default function TourDetail() {
             >
               <h2 className="font-serif text-2xl font-semibold text-green-950 mb-6">Day-by-Day Itinerary</h2>
               <div className="space-y-3">
-                {tour.itinerary.map((day) => (
+                {(tour.itinerary ?? []).map((day) => (
                   <div
                     key={day.day}
                     className="border border-gray-100 rounded-2xl overflow-hidden"
@@ -282,7 +302,7 @@ export default function TourDetail() {
                 <div>
                   <h3 className="font-sans text-sm font-semibold text-green-950 uppercase tracking-wider mb-4">Included</h3>
                   <ul className="space-y-2.5">
-                    {tour.included.map((item) => (
+                    {(tour.included ?? []).map((item) => (
                       <li key={item} className="flex items-center gap-2.5">
                         <CheckCircle size={15} className="text-green-600 flex-shrink-0" />
                         <span className="font-sans text-sm text-gray-600">{item}</span>
@@ -293,7 +313,7 @@ export default function TourDetail() {
                 <div>
                   <h3 className="font-sans text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Not Included</h3>
                   <ul className="space-y-2.5">
-                    {tour.excluded.map((item) => (
+                    {(tour.excluded ?? []).map((item) => (
                       <li key={item} className="flex items-center gap-2.5">
                         <XCircle size={15} className="text-gray-300 flex-shrink-0" />
                         <span className="font-sans text-sm text-gray-400">{item}</span>
@@ -314,14 +334,14 @@ export default function TourDetail() {
                   <div>
                     <p className="font-sans text-xs text-gray-400 uppercase tracking-wider">Starting from</p>
                     <p className="font-serif text-4xl font-semibold text-green-950">${tour.price.toLocaleString()}</p>
-                    <p className="font-sans text-xs text-gray-400">{tour.priceUnit}</p>
+                    <p className="font-sans text-xs text-gray-400">per person</p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-1 justify-end">
                       <Star size={14} className="text-gold fill-gold" />
                       <span className="font-sans text-sm font-semibold text-green-950">{tour.rating}</span>
                     </div>
-                    <p className="font-sans text-xs text-gray-400">{tour.reviewCount} reviews</p>
+                    <p className="font-sans text-xs text-gray-400">{tour.review_count} reviews</p>
                   </div>
                 </div>
 
@@ -331,7 +351,7 @@ export default function TourDetail() {
                 </div>
 
                 <div className="border-t border-gray-100 pt-5">
-                  <BookingForm tourTitle={tour.title} tourPrice={tour.price} compact={true} />
+                  <BookingForm tourId={tour.id} tourTitle={tour.title} tourPrice={tour.price} compact={true} />
                 </div>
               </div>
 

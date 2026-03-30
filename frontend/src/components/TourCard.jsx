@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom'
 import { Star, Clock, Users, MapPin, ArrowRight } from 'lucide-react'
 
 export default function TourCard({ tour, index = 0 }) {
+  const coverImage =
+    tour.images?.find((i) => i.is_cover)?.url ??
+    tour.images?.[0]?.url ??
+    tour.image ??
+    '/images/hero-bg.jpg'
+  const groupSize = tour.group_size ?? tour.groupSize ?? ''
+  const reviewCount = tour.review_count ?? tour.reviewCount ?? 0
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -14,7 +22,7 @@ export default function TourCard({ tour, index = 0 }) {
       {/* Image */}
       <div className="relative overflow-hidden aspect-[4/3]">
         <img
-          src={tour.image}
+          src={coverImage}
           alt={tour.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
@@ -40,7 +48,7 @@ export default function TourCard({ tour, index = 0 }) {
         {/* Quick view overlay */}
         <div className="absolute inset-0 flex items-end justify-center pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
           <Link
-            to={`/tours/${tour.id}`}
+            to={`/tours/${tour.slug ?? tour.id}`}
             className="bg-white text-green-950 font-sans text-xs font-semibold px-5 py-2.5 rounded-full flex items-center gap-2 hover:bg-gold hover:text-white transition-colors duration-300"
           >
             View Details <ArrowRight size={13} />
@@ -72,7 +80,7 @@ export default function TourCard({ tour, index = 0 }) {
           </div>
           <div className="flex items-center gap-1.5">
             <Users size={13} />
-            <span className="font-sans text-xs">{tour.groupSize}</span>
+            <span className="font-sans text-xs">{groupSize}</span>
           </div>
         </div>
 
@@ -82,7 +90,7 @@ export default function TourCard({ tour, index = 0 }) {
           <div className="flex items-center gap-1.5">
             <Star size={14} className="text-gold fill-gold" />
             <span className="font-sans text-sm font-semibold text-green-950">{tour.rating}</span>
-            <span className="font-sans text-xs text-gray-400">({tour.reviewCount})</span>
+            <span className="font-sans text-xs text-gray-400">({reviewCount})</span>
           </div>
 
           {/* Price */}
@@ -91,7 +99,7 @@ export default function TourCard({ tour, index = 0 }) {
             <div className="font-serif text-xl font-semibold text-green-950">
               ${tour.price.toLocaleString()}
             </div>
-            <div className="font-sans text-[10px] text-gray-400">{tour.priceUnit}</div>
+            <div className="font-sans text-[10px] text-gray-400">per person</div>
           </div>
         </div>
       </div>

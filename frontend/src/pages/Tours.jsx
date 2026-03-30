@@ -1,29 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { Search, SlidersHorizontal, X, Loader2 } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import TourCard from '../components/TourCard'
-import { tours, categories } from '../data/tours'
+import { toursApi } from '../api/tours'
+import { categories } from '../data/tours'
 
 export default function Tours() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('featured')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
 
-  const filtered = tours
-    .filter((t) => {
-      const matchCat = activeCategory === 'All' || t.category === activeCategory
-      const matchSearch =
-        t.title.toLowerCase().includes(search.toLowerCase()) ||
-        t.location.toLowerCase().includes(search.toLowerCase()) ||
-        t.category.toLowerCase().includes(search.toLowerCase())
-      return matchCat && matchSearch
-    })
-    .sort((a, b) => {
-      if (sortBy === 'price-asc') return a.price - b.price
-      if (sortBy === 'price-desc') return b.price - a.price
-      if (sortBy === 'rating') return b.rating - a.rating
-      return b.featured - a.featured
-    })
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 400)
+    return () => clearTimeout(t)
+  }, [search])
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['tours', activeCategory, debouncedSearch, sortBy],
+    queryFn: () =>
+      toursApi.list({
+        q: debouncedSearch || undefined,
+        category: activeCategory !== 'All' ? activeCategory : undefined,
+        per_page: 50,
+      }),
+  })
+
+  const allTours = data?.items ?? []
+
+  const filtered = [...allTours].sort((a, b) => {
+    if (sortBy === 'price-asc') return a.price - b.price
+    if (sortBy === 'price-desc') return b.price - a.price
+    if (sortBy === 'rating') return b.rating - a.rating
+    return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0)
+  })
 
   return (
     <main className="min-h-screen">
@@ -61,7 +72,7 @@ export default function Tours() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="font-sans text-white/60 text-lg max-w-xl mx-auto"
           >
-            {tours.length} carefully curated journeys across Tanzania's most iconic landscapes.
+            {data?.total ?? '…'} carefully curated journeys across Tanzania's most iconic landscapes.
           </motion.p>
         </div>
       </section>
@@ -130,13 +141,25 @@ export default function Tours() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <p className="font-sans text-sm text-gray-500">
-              Showing <span className="font-semibold text-green-950">{filtered.length}</span> tours
-              {activeCategory !== 'All' && ` in ${activeCategory}`}
+              {isLoading ? 'Loading tours…' : <>Showing <span className="font-semibold text-green-950">{filtered.length}</span> tours{activeCategory !== 'All' && ` in ${activeCategory}`}</>}
             </p>
           </div>
 
+          {isError && (
+            <div className="text-center py-16">
+              <p className="font-sans text-red-500 mb-4">Unable to load tours. Is the backend running?</p>
+              <p className="font-sans text-gray-400 text-sm">Make sure the API is running at {import.meta.env.VITE_API_URL || 'http://localhost:8000'}</p>
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="flex justify-center py-24">
+              <Loader2 size={40} className="animate-spin text-gold" />
+            </div>
+          )}
+
           <AnimatePresence mode="wait">
-            {filtered.length > 0 ? (
+            {!isLoading && !isError && filtered.length > 0 ? (
               <motion.div
                 key={activeCategory + search + sortBy}
                 initial={{ opacity: 0 }}
@@ -149,7 +172,7 @@ export default function Tours() {
                   <TourCard key={tour.id} tour={tour} index={i} />
                 ))}
               </motion.div>
-            ) : (
+            ) : !isLoading && !isError ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -165,7 +188,7 @@ export default function Tours() {
                   Clear Filters
                 </button>
               </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
       </section>
