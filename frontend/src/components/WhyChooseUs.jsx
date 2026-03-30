@@ -51,10 +51,10 @@ export default function WhyChooseUs() {
   const { ref, inView } = useInView({ threshold: 0.15, triggerOnce: true })
 
   return (
-    <section className="py-24 lg:py-32 bg-beige" id="about">
+    <section className="py-14 sm:py-24 lg:py-32 bg-beige" id="about">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

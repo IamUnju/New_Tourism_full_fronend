@@ -20,9 +20,9 @@ export default function Footer() {
     <footer className="bg-green-950 text-white">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-12">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
           {/* Brand column */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2 lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center text-white font-serif font-bold text-lg flex-shrink-0">
                 K
@@ -73,7 +73,7 @@ export default function Footer() {
 
           {/* Link columns */}
           {Object.entries(footerLinks).map(([section, links]) => (
-            <div key={section} className="lg:col-span-1">
+            <div key={section} className="col-span-1 lg:col-span-1">
               <h4 className="font-sans text-xs font-semibold tracking-[0.15em] uppercase text-white mb-5">
                 {section}
               </h4>
@@ -125,7 +125,7 @@ export default function Footer() {
           <p className="font-sans text-xs text-white/30">
             © {new Date().getFullYear()} Karibu Safari. All rights reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6 justify-center sm:justify-start">
             {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
               <Link
                 key={item}

@@ -7,17 +7,17 @@ function InquiryRow({ inquiry }) {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div className="border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm">
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
       <button
         onClick={() => setExpanded((e) => !e)}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors text-left"
       >
         <div className="flex items-center gap-4 min-w-0">
-          <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center font-sans text-sm font-bold text-green-700 flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center font-sans text-sm font-bold text-green-700 flex-shrink-0">
             {inquiry.name?.[0]?.toUpperCase() ?? 'G'}
           </div>
           <div className="min-w-0">
-            <div className="font-sans text-sm font-semibold text-green-950 truncate">{inquiry.name}</div>
+            <div className="font-sans text-sm font-semibold text-gray-900 truncate">{inquiry.name}</div>
             <div className="font-sans text-xs text-gray-400 truncate">{inquiry.email}</div>
           </div>
           {inquiry.tour_title && (
@@ -71,7 +71,7 @@ function InquiryRow({ inquiry }) {
           <div className="mt-4">
             <a
               href={`mailto:${inquiry.email}?subject=Re: Your Karibu Safari Inquiry`}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-green-950 text-white font-sans text-xs font-semibold rounded-xl hover:bg-amber-500 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-sans text-xs font-semibold rounded-lg hover:bg-green-700 transition-colors"
             >
               <Mail size={13} /> Reply via Email
             </a>
@@ -95,18 +95,15 @@ export default function AdminInquiries() {
   const totalPages = data?.pages ?? 1
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="font-serif text-3xl font-bold text-green-950">Inquiries</h1>
-        <p className="font-sans text-sm text-gray-500 mt-1">{total} total inquiries</p>
-      </div>
+    <div className="space-y-4">
+      <p className="font-sans text-sm text-gray-400">{total} total inquiries</p>
 
       {isLoading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : inquiries.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
           <Mail size={36} className="text-gray-200 mx-auto mb-3" />
           <p className="font-sans text-sm text-gray-400">No inquiries yet</p>
         </div>
@@ -117,7 +114,7 @@ export default function AdminInquiries() {
       )}
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4 bg-white rounded-2xl border border-gray-100 px-4 py-3 shadow-sm">
+        <div className="flex items-center justify-between mt-4 bg-white rounded-xl border border-gray-200 px-4 py-3 shadow-sm">
           <span className="font-sans text-xs text-gray-400">Page {page} of {totalPages}</span>
           <div className="flex gap-2">
             <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}

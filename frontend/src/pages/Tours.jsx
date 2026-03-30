@@ -39,7 +39,7 @@ export default function Tours() {
   return (
     <main className="min-h-screen">
       {/* Page Hero */}
-      <section className="relative pt-36 pb-20 bg-green-950 overflow-hidden">
+      <section className="relative pt-28 sm:pt-36 pb-14 sm:pb-20 bg-green-950 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img
             src="/images/hero-bg.jpg"
@@ -62,7 +62,7 @@ export default function Tours() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-serif text-5xl md:text-6xl text-white font-semibold leading-tight mb-4"
+            className="font-serif text-3xl sm:text-5xl md:text-6xl text-white font-semibold leading-tight mb-4"
           >
             Safari Tours & Expeditions
           </motion.h1>
@@ -102,12 +102,12 @@ export default function Tours() {
             </div>
 
             {/* Category pills */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible scrollbar-none" style={{scrollbarWidth:'none'}}>
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`font-sans text-xs font-medium px-4 py-2 rounded-full transition-all duration-200 ${
+                  className={`font-sans text-xs font-medium px-4 py-2 rounded-full transition-all duration-200 flex-shrink-0 ${
                     activeCategory === cat
                       ? 'bg-green-950 text-white shadow-sm'
                       : 'bg-beige text-gray-600 hover:bg-gray-100'

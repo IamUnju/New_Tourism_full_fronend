@@ -4,7 +4,7 @@ import { ArrowRight, Phone } from 'lucide-react'
 
 export default function CTASection() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-24 lg:py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <img
@@ -33,13 +33,13 @@ export default function CTASection() {
             Begin Your Journey
           </span>
 
-          <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl text-white font-semibold leading-tight text-shadow mb-6">
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-semibold leading-tight text-shadow mb-5 sm:mb-6">
             Your Dream Safari
             <br />
             <span className="text-gold italic">Awaits You</span>
           </h2>
 
-          <p className="font-sans text-white/75 text-xl leading-relaxed max-w-2xl mx-auto mb-12">
+          <p className="font-sans text-white/75 text-base sm:text-xl leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-12">
             Let our experts craft the perfect Tanzania itinerary tailored to your travel style, budget, and bucket-list moments. No obligation, just inspiration.
           </p>
 

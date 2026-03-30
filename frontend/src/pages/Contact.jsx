@@ -36,7 +36,7 @@ export default function Contact() {
   return (
     <main className="min-h-screen bg-beige">
       {/* Page Hero */}
-      <section className="relative pt-36 pb-20 bg-green-950 overflow-hidden">
+      <section className="relative pt-28 sm:pt-36 pb-14 sm:pb-20 bg-green-950 overflow-hidden">
         <div className="absolute inset-0 opacity-15">
           <img src="/images/sections/story-luxury.jpg" alt="" className="w-full h-full object-cover" />
         </div>
@@ -71,7 +71,7 @@ export default function Contact() {
       {/* Contact Info Cards */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 -mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 sm:-mt-10">
             {contactInfo.map((item, i) => {
               const Icon = item.icon
               return (
@@ -106,7 +106,7 @@ export default function Contact() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="lg:col-span-3 bg-white rounded-3xl p-8 lg:p-10 shadow-sm"
+              className="lg:col-span-3 bg-white rounded-3xl p-5 sm:p-8 lg:p-10 shadow-sm"
             >
               <h2 className="font-serif text-3xl font-semibold text-green-950 mb-2">Send Us a Message</h2>
               <p className="font-sans text-gray-500 text-sm mb-8">

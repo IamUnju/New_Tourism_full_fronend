@@ -18,10 +18,10 @@ export default function FeaturedTours() {
   const displayTours = featured?.length ? featured : staticTours.filter((t) => t.featured)
 
   return (
-    <section id="tours" className="py-24 lg:py-32 bg-beige">
+    <section id="tours" className="py-14 sm:py-24 lg:py-32 bg-beige">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section header */}
-        <div ref={ref} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div ref={ref} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -66,7 +66,7 @@ export default function FeaturedTours() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="text-center mt-16"
+          className="text-center mt-10 sm:mt-16"
         >
           <Link to="/tours" className="btn-outline-dark inline-flex items-center gap-2">
             Explore All Tours

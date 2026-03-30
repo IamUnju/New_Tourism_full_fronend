@@ -7,11 +7,11 @@ export default function StatsSection() {
   const { ref, inView } = useInView({ threshold: 0.3, triggerOnce: true })
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-14 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div
           ref={ref}
-          className="bg-green-950 rounded-3xl px-8 py-16 lg:py-20"
+          className="bg-green-950 rounded-3xl px-5 sm:px-8 py-10 sm:py-16 lg:py-20"
         >
           <div className="text-center mb-12">
             <motion.span
@@ -46,7 +46,7 @@ export default function StatsSection() {
                   <div className="hidden lg:block absolute right-0 top-1/4 h-1/2 w-px bg-white/10" />
                 )}
 
-                <div className="font-serif text-5xl lg:text-6xl font-semibold text-white mb-1">
+                <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold text-white mb-1">
                   {inView ? (
                     <CountUp
                       start={0}

@@ -22,15 +22,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gold text-white px-8 py-4 rounded-full font-sans font-medium text-sm tracking-widest uppercase transition-all duration-300 hover:bg-gold-dark hover:shadow-lg hover:shadow-gold/30 active:scale-95;
+    @apply bg-gold text-white px-6 py-3.5 sm:px-8 sm:py-4 rounded-full font-sans font-medium text-sm tracking-widest uppercase transition-all duration-300 hover:bg-gold-dark hover:shadow-lg hover:shadow-gold/30 active:scale-95;
   }
 
   .btn-outline {
-    @apply border border-white text-white px-8 py-4 rounded-full font-sans font-medium text-sm tracking-widest uppercase transition-all duration-300 hover:bg-white hover:text-green-950 active:scale-95;
+    @apply border border-white text-white px-6 py-3.5 sm:px-8 sm:py-4 rounded-full font-sans font-medium text-sm tracking-widest uppercase transition-all duration-300 hover:bg-white hover:text-green-950 active:scale-95;
   }
 
   .btn-outline-dark {
-    @apply border border-green-950 text-green-950 px-8 py-4 rounded-full font-sans font-medium text-sm tracking-widest uppercase transition-all duration-300 hover:bg-green-950 hover:text-white active:scale-95;
+    @apply border border-green-950 text-green-950 px-6 py-3.5 sm:px-8 sm:py-4 rounded-full font-sans font-medium text-sm tracking-widest uppercase transition-all duration-300 hover:bg-green-950 hover:text-white active:scale-95;
   }
 
   .section-label {
@@ -38,11 +38,11 @@
   }
 
   .section-title {
-    @apply font-serif text-4xl md:text-5xl lg:text-6xl font-semibold text-green-950 leading-tight;
+    @apply font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-green-950 leading-tight;
   }
 
   .section-title-white {
-    @apply font-serif text-4xl md:text-5xl lg:text-6xl font-semibold text-white leading-tight;
+    @apply font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-white leading-tight;
   }
 
   .card-hover {

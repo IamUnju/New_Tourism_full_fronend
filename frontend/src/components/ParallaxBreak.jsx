@@ -50,7 +50,7 @@ export default function ParallaxBreak({
           {subtitle && (
             <p className="font-sans text-gold text-sm tracking-[0.25em] uppercase mb-4">{subtitle}</p>
           )}
-          <h2 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white font-semibold leading-tight text-shadow mb-8">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-white font-semibold leading-tight text-shadow mb-5 sm:mb-8">
             {title}
           </h2>
           {cta && (

@@ -27,10 +27,10 @@ export default function Testimonials() {
     : staticTestimonials
 
   return (
-    <section className="py-24 lg:py-32 bg-green-950 overflow-hidden">
+    <section className="py-14 sm:py-24 lg:py-32 bg-green-950 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -116,7 +116,7 @@ export default function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-12 mt-16 pt-12 border-t border-white/10"
+          className="flex flex-wrap justify-center gap-6 sm:gap-12 mt-10 sm:mt-16 pt-8 sm:pt-12 border-t border-white/10"
         >
           {[
             { val: '4.97/5', label: 'Average Rating on TripAdvisor' },

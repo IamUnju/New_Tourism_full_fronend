@@ -129,7 +129,7 @@ export default function TourDetail() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left — Main Content */}
           <div className="lg:col-span-2 space-y-10">
@@ -140,7 +140,7 @@ export default function TourDetail() {
                   <span className="bg-gold text-white font-sans text-xs font-semibold px-3 py-1.5 rounded-full mb-3 inline-block">
                     {tour.category}
                   </span>
-                  <h1 className="font-serif text-4xl md:text-5xl font-semibold text-green-950 leading-tight">{tour.title}</h1>
+                  <h1 className="font-serif text-2xl sm:text-4xl md:text-5xl font-semibold text-green-950 leading-tight">{tour.title}</h1>
                 </div>
                 <div className="flex gap-2 flex-shrink-0 mt-1">
                   <button
@@ -176,6 +176,21 @@ export default function TourDetail() {
               </div>
             </div>
 
+            {/* Mobile price + book strip */}
+            <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-4 lg:hidden shadow-sm border border-gray-100">
+              <div>
+                <p className="font-sans text-xs text-gray-400 uppercase tracking-wider">From</p>
+                <p className="font-serif text-2xl font-semibold text-green-950">${tour.price.toLocaleString()}</p>
+                <p className="font-sans text-[11px] text-gray-400">per person</p>
+              </div>
+              <button
+                onClick={() => bookingRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-green-950 text-white font-sans text-sm font-medium px-6 py-3 rounded-xl hover:bg-gold transition-colors"
+              >
+                Book Now
+              </button>
+            </div>
+
             {/* Gallery */}
             <div className="space-y-3">
               <Swiper
@@ -193,7 +208,8 @@ export default function TourDetail() {
               <Swiper
                 onSwiper={setThumbsSwiper}
                 modules={[Thumbs]}
-                slidesPerView={4}
+                slidesPerView={3}
+                breakpoints={{ 480: { slidesPerView: 4 }, 768: { slidesPerView: 5 } }}
                 spaceBetween={8}
                 watchSlidesProgress
                 className="!h-20"
@@ -376,14 +392,14 @@ export default function TourDetail() {
         </div>
 
         {/* Related Tours */}
-        {(related.length > 0 || fallbackRelated.length > 0) && (
+        {related.length > 0 && (
           <div className="mt-20">
             <div className="mb-8">
               <span className="section-label block mb-2">You May Also Like</span>
               <h2 className="font-serif text-3xl text-green-950 font-semibold">Similar Experiences</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {(related.length > 0 ? related : fallbackRelated).map((t, i) => (
+              {related.map((t, i) => (
                 <TourCard key={t.id} tour={t} index={i} />
               ))}
             </div>

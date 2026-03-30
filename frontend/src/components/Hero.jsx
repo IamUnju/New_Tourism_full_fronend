@@ -39,7 +39,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section ref={heroRef} className="relative h-screen min-h-[700px] overflow-hidden flex items-center">
+    <section ref={heroRef} className="relative h-screen min-h-[600px] sm:min-h-[700px] overflow-hidden flex items-center">
       {/* Background Image with Parallax */}
       <div className="absolute inset-0 overflow-hidden">
         <img
@@ -93,7 +93,7 @@ export default function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            className="font-serif text-5xl md:text-7xl lg:text-8xl font-semibold text-white leading-[1.05] text-shadow mb-6"
+            className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold text-white leading-[1.05] text-shadow mb-5 sm:mb-6"
           >
             Explore Tanzania
             <br />
@@ -107,7 +107,7 @@ export default function Hero() {
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            className="font-sans text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl text-shadow-sm"
+            className="font-sans text-base sm:text-lg md:text-xl text-white/85 leading-relaxed mb-8 sm:mb-10 max-w-xl text-shadow-sm"
           >
             Crafted by local experts for unforgettable safari experiences. From the Serengeti's endless plains to Kilimanjaro's icy summit.
           </motion.p>

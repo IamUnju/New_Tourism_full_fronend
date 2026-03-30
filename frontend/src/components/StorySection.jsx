@@ -32,7 +32,7 @@ function StoryBlock({ story, index }) {
   return (
     <div
       ref={ref}
-      className={`flex flex-col ${story.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-12 lg:gap-20 items-center`}
+      className={`flex flex-col ${story.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 sm:gap-12 lg:gap-20 items-center`}
     >
       {/* Image side */}
       <motion.div
@@ -68,10 +68,10 @@ function StoryBlock({ story, index }) {
         className="w-full lg:w-1/2"
       >
         <span className="section-label block mb-4">{story.label}</span>
-        <h2 className="font-serif text-4xl lg:text-5xl font-semibold text-green-950 leading-tight mb-6 whitespace-pre-line">
+        <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold text-green-950 leading-tight mb-5 sm:mb-6 whitespace-pre-line">
           {story.title}
         </h2>
-        <p className="font-sans text-gray-600 leading-relaxed text-lg mb-8">{story.body}</p>
+        <p className="font-sans text-gray-600 leading-relaxed text-base sm:text-lg mb-6 sm:mb-8">{story.body}</p>
 
         {/* Bullets */}
         <ul className="space-y-3 mb-10">
@@ -97,8 +97,8 @@ function StoryBlock({ story, index }) {
 
 export default function StorySection() {
   return (
-    <section className="py-24 lg:py-36 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-28">
+    <section className="py-14 sm:py-24 lg:py-36 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-14 sm:space-y-20 lg:space-y-28">
         {stories.map((story, i) => (
           <StoryBlock key={i} story={story} index={i} />
         ))}

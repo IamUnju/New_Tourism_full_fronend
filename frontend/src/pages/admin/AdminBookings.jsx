@@ -66,42 +66,39 @@ export default function AdminBookings() {
   const totalPages = data?.pages ?? 1
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="font-serif text-3xl font-bold text-green-950">Bookings</h1>
-        <p className="font-sans text-sm text-gray-500 mt-1">{total} total bookings</p>
-      </div>
+    <div className="space-y-4">
+      <p className="font-sans text-sm text-gray-400">{total} total bookings</p>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-7 h-7 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-100">
+                <thead className="bg-gray-50">
+                  <tr className="border-b border-gray-200">
                     {['#', 'Guest', 'Tour', 'Date', 'Guests', 'Total', 'Status', 'Booked'].map((h) => (
-                      <th key={h} className="px-4 py-3 text-left font-sans text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <th key={h} className="px-4 py-3 text-left font-sans text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-100">
                   {bookings.length === 0 ? (
                     <tr><td colSpan={8} className="text-center py-12 font-sans text-sm text-gray-400">No bookings yet</td></tr>
                   ) : bookings.map((b) => (
                     <tr key={b.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-3 font-sans text-xs text-gray-400">#{b.id}</td>
                       <td className="px-4 py-3">
-                        <div className="font-sans text-sm font-semibold text-green-950">{b.guest_name}</div>
+                        <div className="font-sans text-sm font-semibold text-gray-900">{b.guest_name}</div>
                         <div className="font-sans text-xs text-gray-400">{b.guest_email}</div>
                       </td>
                       <td className="px-4 py-3 font-sans text-sm text-gray-700 max-w-[160px] truncate">{b.tour_title ?? `Tour #${b.tour_id}`}</td>
                       <td className="px-4 py-3 font-sans text-sm text-gray-600 whitespace-nowrap">{b.travel_date}</td>
                       <td className="px-4 py-3 font-sans text-sm text-gray-600">{b.num_guests}</td>
-                      <td className="px-4 py-3 font-sans text-sm font-semibold text-green-950">${(b.total_price ?? 0).toLocaleString()}</td>
+                      <td className="px-4 py-3 font-sans text-sm font-semibold text-gray-900">${(b.total_price ?? 0).toLocaleString()}</td>
                       <td className="px-4 py-3">
                         <StatusDropdown bookingId={b.id} current={b.status} />
                       </td>
@@ -116,7 +113,7 @@ export default function AdminBookings() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+              <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
                 <span className="font-sans text-xs text-gray-400">Page {page} of {totalPages}</span>
                 <div className="flex gap-2">
                   <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}

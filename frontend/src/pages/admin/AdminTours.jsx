@@ -131,55 +131,52 @@ export default function AdminTours() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="font-serif text-3xl font-bold text-green-950">Tours</h1>
-          <p className="font-sans text-sm text-gray-500 mt-1">{data?.total ?? 0} tours total</p>
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="font-sans text-sm text-gray-400">{data?.total ?? 0} tours total</p>
         <button onClick={() => setModal('create')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-green-950 text-white font-sans text-sm font-semibold rounded-xl hover:bg-amber-500 transition-colors">
-          <Plus size={16} /> Add Tour
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-sans text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-sm">
+          <Plus size={15} /> Add Tour
         </button>
       </div>
 
       {/* Search */}
-      <div className="relative mb-4">
-        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+      <div className="relative">
+        <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           type="text" placeholder="Search tours…"
           value={search} onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl font-sans text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg font-sans text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
         />
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center py-16">
-            <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-7 h-7 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-100">
+            <thead className="bg-gray-50">
+              <tr className="border-b border-gray-200">
                 {['Tour', 'Category', 'Location', 'Price', 'Rating', 'Status', 'Actions'].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-sans text-xs font-semibold text-gray-400 uppercase tracking-wider">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left font-sans text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-100">
               {tours.length === 0 ? (
                 <tr><td colSpan={7} className="text-center py-12 font-sans text-sm text-gray-400">No tours found</td></tr>
               ) : tours.map((tour) => (
                 <tr key={tour.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3">
-                    <div className="font-sans text-sm font-semibold text-green-950">{tour.title}</div>
+                    <div className="font-sans text-sm font-semibold text-gray-900">{tour.title}</div>
                     <div className="font-sans text-xs text-gray-400">{tour.duration}</div>
                   </td>
                   <td className="px-4 py-3 font-sans text-sm text-gray-600">{tour.category}</td>
                   <td className="px-4 py-3 font-sans text-sm text-gray-600">{tour.location}</td>
-                  <td className="px-4 py-3 font-sans text-sm font-semibold text-green-950">${(tour.price ?? 0).toLocaleString()}</td>
+                  <td className="px-4 py-3 font-sans text-sm font-semibold text-gray-900">${(tour.price ?? 0).toLocaleString()}</td>
                   <td className="px-4 py-3 font-sans text-sm text-gray-600">{tour.rating ?? '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1.5">
@@ -188,9 +185,9 @@ export default function AdminTours() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5">
                       <button onClick={() => setModal(tour)}
-                        className="p-1.5 rounded-lg hover:bg-amber-50 hover:text-amber-600 text-gray-400 transition-colors">
+                        className="p-1.5 rounded-lg hover:bg-blue-50 hover:text-blue-600 text-gray-400 transition-colors">
                         <Pencil size={14} />
                       </button>
                       <button onClick={() => deleteMutation.mutate(tour.id)}
