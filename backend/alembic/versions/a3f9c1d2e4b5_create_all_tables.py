@@ -10,6 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import inspect
+from sqlalchemy.dialects import postgresql
 
 
 revision: str = 'a3f9c1d2e4b5'
@@ -25,6 +26,10 @@ def _existing_tables():
 
 def upgrade() -> None:
     existing = _existing_tables()
+
+    userrole_enum = postgresql.ENUM('admin', 'customer', name='userrole', create_type=False)
+    bookingstatus_enum = postgresql.ENUM('pending', 'confirmed', 'cancelled', 'completed', name='bookingstatus', create_type=False)
+    tripplanstatus_enum = postgresql.ENUM('pending', 'reviewing', 'quoted', 'confirmed', 'cancelled', name='tripplanstatus', create_type=False)
 
     # --- Enums (idempotent via pg_type check) ---
     op.execute(sa.text("""
@@ -57,7 +62,7 @@ def upgrade() -> None:
             sa.Column('email', sa.String(255), nullable=False, unique=True, index=True),
             sa.Column('name', sa.String(255), nullable=False),
             sa.Column('hashed_password', sa.String(255), nullable=False),
-            sa.Column('role', sa.Enum('admin', 'customer', name='userrole', create_type=False), nullable=False, server_default='customer'),
+            sa.Column('role', userrole_enum, nullable=False, server_default='customer'),
             sa.Column('is_active', sa.Boolean(), nullable=False, server_default=sa.true()),
             sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
             sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
@@ -114,7 +119,7 @@ def upgrade() -> None:
             sa.Column('travel_date', sa.Date(), nullable=False),
             sa.Column('guests', sa.Integer(), nullable=False, server_default='1'),
             sa.Column('total_price', sa.Float(), nullable=False),
-            sa.Column('status', sa.Enum('pending', 'confirmed', 'cancelled', 'completed', name='bookingstatus', create_type=False), nullable=False, server_default='pending'),
+            sa.Column('status', bookingstatus_enum, nullable=False, server_default='pending'),
             sa.Column('special_requests', sa.Text(), nullable=True),
             sa.Column('contact_name', sa.String(255), nullable=False),
             sa.Column('contact_email', sa.String(255), nullable=False),
@@ -187,7 +192,7 @@ def upgrade() -> None:
             sa.Column('duration_days', sa.Integer(), nullable=True),
             sa.Column('preferences', sa.JSON(), nullable=True),
             sa.Column('special_requirements', sa.Text(), nullable=True),
-            sa.Column('status', sa.Enum('pending', 'reviewing', 'quoted', 'confirmed', 'cancelled', name='tripplanstatus', create_type=False), nullable=False, server_default='pending'),
+            sa.Column('status', tripplanstatus_enum, nullable=False, server_default='pending'),
             sa.Column('admin_notes', sa.Text(), nullable=True),
             sa.Column('quoted_price', sa.Float(), nullable=True),
             sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
@@ -204,6 +209,6 @@ def downgrade() -> None:
     op.drop_table('tour_images')
     op.drop_table('tours')
     op.drop_table('users')
-    sa.Enum(name='tripplanstatus').drop(op.get_bind(), checkfirst=True)
-    sa.Enum(name='bookingstatus').drop(op.get_bind(), checkfirst=True)
-    sa.Enum(name='userrole').drop(op.get_bind(), checkfirst=True)
+    op.execute("DROP TYPE IF EXISTS tripplanstatus")
+    op.execute("DROP TYPE IF EXISTS bookingstatus")
+    op.execute("DROP TYPE IF EXISTS userrole")
