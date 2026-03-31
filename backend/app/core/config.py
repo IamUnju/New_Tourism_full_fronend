@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, field_validator, model_validator
 from typing import List, Optional
 import secrets
 
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     DATABASE_URL: str
-    DATABASE_URL_SYNC: str
+    DATABASE_URL_SYNC: Optional[str] = None
 
     REDIS_URL: Optional[str] = None
 
@@ -38,6 +38,31 @@ class Settings(BaseSettings):
     @classmethod
     def parse_cors(cls, v: str) -> str:
         return v
+
+    @model_validator(mode="after")
+    def normalise_db_urls(self) -> "Settings":
+        def _to_asyncpg(url: str) -> str:
+            if url.startswith("postgres://"):
+                return "postgresql+asyncpg://" + url[len("postgres://"):]
+            if url.startswith("postgresql://"):
+                return "postgresql+asyncpg://" + url[len("postgresql://"):]
+            return url
+
+        def _to_psycopg2(url: str) -> str:
+            if url.startswith("postgres://"):
+                return "postgresql+psycopg2://" + url[len("postgres://"):]
+            if url.startswith("postgresql://"):
+                return "postgresql+psycopg2://" + url[len("postgresql://"):]
+            if url.startswith("postgresql+asyncpg://"):
+                return "postgresql+psycopg2://" + url[len("postgresql+asyncpg://"):]
+            return url
+
+        self.DATABASE_URL = _to_asyncpg(self.DATABASE_URL)
+        if not self.DATABASE_URL_SYNC:
+            self.DATABASE_URL_SYNC = _to_psycopg2(self.DATABASE_URL)
+        else:
+            self.DATABASE_URL_SYNC = _to_psycopg2(self.DATABASE_URL_SYNC)
+        return self
 
     def get_allowed_origins(self) -> List[str]:
         return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
