@@ -26,10 +26,28 @@ def _existing_tables():
 def upgrade() -> None:
     existing = _existing_tables()
 
-    # --- Enums (safe to call multiple times) ---
-    sa.Enum('admin', 'customer', name='userrole').create(op.get_bind(), checkfirst=True)
-    sa.Enum('pending', 'confirmed', 'cancelled', 'completed', name='bookingstatus').create(op.get_bind(), checkfirst=True)
-    sa.Enum('pending', 'reviewing', 'quoted', 'confirmed', 'cancelled', name='tripplanstatus').create(op.get_bind(), checkfirst=True)
+    # --- Enums (idempotent via pg_type check) ---
+    op.execute(sa.text("""
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userrole') THEN
+                CREATE TYPE userrole AS ENUM ('admin', 'customer');
+            END IF;
+        END $$;
+    """))
+    op.execute(sa.text("""
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'bookingstatus') THEN
+                CREATE TYPE bookingstatus AS ENUM ('pending', 'confirmed', 'cancelled', 'completed');
+            END IF;
+        END $$;
+    """))
+    op.execute(sa.text("""
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tripplanstatus') THEN
+                CREATE TYPE tripplanstatus AS ENUM ('pending', 'reviewing', 'quoted', 'confirmed', 'cancelled');
+            END IF;
+        END $$;
+    """))
 
     # --- users ---
     if 'users' not in existing:
